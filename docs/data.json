@@ -1,0 +1,42 @@
+[
+  {
+    "company_name": "KEGALLE PLANTATIONS PLC",
+    "xd_date": "2026-03-30",
+    "voting_dividend_per_share": "3.00",
+    "payment_date": "2026-04-10",
+    "announcement_date": "2026-03-30",
+    "scraped_at": "2026-04-02 12:00:00"
+  },
+  {
+    "company_name": "SAMPATH BANK PLC",
+    "xd_date": "2026-03-28",
+    "voting_dividend_per_share": "5.50",
+    "payment_date": "2026-04-15",
+    "announcement_date": "2026-03-28",
+    "scraped_at": "2026-04-02 12:00:00"
+  },
+  {
+    "company_name": "PEOPLES LEASING & FINANCE",
+    "xd_date": "2026-03-25",
+    "voting_dividend_per_share": "2.75",
+    "payment_date": "2026-04-05",
+    "announcement_date": "2026-03-25",
+    "scraped_at": "2026-04-02 12:00:00"
+  },
+  {
+    "company_name": "HEMAS HOLDINGS PLC",
+    "xd_date": "2026-03-22",
+    "voting_dividend_per_share": "4.00",
+    "payment_date": "2026-04-01",
+    "announcement_date": "2026-03-22",
+    "scraped_at": "2026-04-02 12:00:00"
+  },
+  {
+    "company_name": "CENTURY INVESTMENT PLC",
+    "xd_date": "2026-03-20",
+    "voting_dividend_per_share": "1.50",
+    "payment_date": "2026-03-31",
+    "announcement_date": "2026-03-20",
+    "scraped_at": "2026-04-02 12:00:00"
+  }
+]

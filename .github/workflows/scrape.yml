@@ -1,0 +1,42 @@
+name: CSE Dividend Scraper
+
+on:
+  schedule:
+    # Run at: 8:00 AM, 10:00 AM, 12:00 PM, 3:00 PM, 8:00 PM (Sri Lanka Time)
+    # Sri Lanka is UTC+5:30, so subtract 5:30 from times
+    - cron: '30 2 * * *'   # 8:00 AM SLT
+    - cron: '30 4 * * *'   # 10:00 AM SLT
+    - cron: '30 6 * * *'   # 12:00 PM SLT
+    - cron: '30 9 * * *'   # 3:00 PM SLT
+    - cron: '30 14 * * *'  # 8:00 PM SLT
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run scraper
+        run: |
+          python scraper.py
+      
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update dividend data - $(date +'%Y-%m-%d %H:%M:%S UTC')" && git push)

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSE Dividend Announcements</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CSE Dividend Announcements</h1>
+            <p class="subtitle">Colombo Stock Exchange - Cash Dividend Data</p>
+        </header>
+
+        <div class="filter-section">
+            <div class="filter-group">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date">
+            </div>
+            
+            <div class="filter-group">
+                <label for="end_date">End Date (Auto-updates to Today):</label>
+                <input type="date" id="end_date" readonly>
+            </div>
+            
+            <button class="btn-filter" onclick="applyFilter()">Filter</button>
+            <button class="btn-reset" onclick="resetFilter()">Reset</button>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <span class="stat-label">Total Records:</span>
+                <span class="stat-value" id="stat-total">-</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Last Scraped:</span>
+                <span class="stat-value" id="stat-scraped">-</span>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="dividends-table" class="dividends-table">
+                <thead>
+                    <tr>
+                        <th>Company Name</th>
+                        <th>XD Date</th>
+                        <th>Dividend Per Share (Rs.)</th>
+                        <th>Payment Date</th>
+                        <th>Announcement Date</th>
+                        <th>Data Retrieved</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr>
+                        <td colspan="6" class="no-data">Loading data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="info-section">
+            <p class="info-text">
+                ⏰ <strong>Auto-update Schedule:</strong> Data is refreshed every day at 08:00 AM, 10:00 AM, 12:00 PM, 03:00 PM, and 08:00 PM (Sri Lanka Time)<br>
+                📊 <strong>Data Source:</strong> <a href="https://www.cse.lk/general-announcements?id=36429&type=CASH+DIVIDEND&category=CASH+DIVIDEND" target="_blank">CSE Official Announcements</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let allData = [];
+
+        // Fetch data from GitHub
+        async function loadData() {
+            try {
+                // Replace with your GitHub repo URL
+                const url = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/data.json';
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load data');
+                }
+                
+                allData = await response.json();
+                displayData(allData);
+                updateStats();
+                updateDateRangeToToday();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('table-body').innerHTML = 
+                    '<tr><td colspan="6" class="no-data">Error loading data. Make sure you\'ve updated the GitHub URL in index.html</td></tr>';
+            }
+        }
+
+        function displayData(data) {
+            const tbody = document.getElementById('table-body');
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="no-data">No dividend data found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(dividend => `
+                <tr>
+                    <td>${dividend.company_name || 'N/A'}</td>
+                    <td>${dividend.xd_date || 'N/A'}</td>
+                    <td>${dividend.voting_dividend_per_share || 'N/A'}</td>
+                    <td>${dividend.payment_date || 'N/A'}</td>
+                    <td>${dividend.announcement_date || 'N/A'}</td>
+                    <td class="time-small">${dividend.scraped_at || 'N/A'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = allData.length;
+            
+            if (allData.length > 0) {
+                const lastScraped = allData[allData.length - 1].scraped_at;
+                document.getElementById('stat-scraped').textContent = 
+                    lastScraped ? new Date(lastScraped).toLocaleString() : '-';
+            }
+        }
+
+        function applyFilter() {
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+            
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+            
+            const filtered = allData.filter(item => {
+                const xdDate = item.xd_date;
+                return xdDate && xdDate >= startDate && xdDate <= endDate;
+            });
+            
+            displayData(filtered);
+        }
+
+        function resetFilter() {
+            displayData(allData);
+            updateDateRangeToToday();
+        }
+
+        function updateDateRangeToToday() {
+            const today = new Date().toISOString().split('T')[0];
+            const thirtyDaysAgo = new Date(Date.now() - 30*24*60*60*1000).toISOString().split('T')[0];
+            
+            document.getElementById('end_date').value = today;
+            document.getElementById('start_date').value = thirtyDaysAgo;
+            
+            // Auto-filter to show latest data
+            applyFilter();
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+        
+        // Refresh data every 5 minutes
+        setInterval(loadData, 5*60*1000);
+    </script>
+</body>
+</html>
