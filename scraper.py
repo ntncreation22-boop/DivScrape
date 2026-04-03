@@ -13,92 +13,110 @@ def parse_date(date_string):
     if not date_string:
         return None
     try:
-        return datetime.strptime(date_string.strip(), "%d %b %Y").strftime("%Y-%m-%d")
-    except:
+        date_string = date_string.strip()
+        
+        # Try DD-MM-YYYY format first (from API)
+        try:
+            return datetime.strptime(date_string, "%d-%m-%Y").strftime("%Y-%m-%d")
+        except:
+            pass
+        
+        # Try DD/MM/YYYY format
+        try:
+            return datetime.strptime(date_string, "%d/%m/%Y").strftime("%Y-%m-%d")
+        except:
+            pass
+        
+        # Try "D MMM YYYY" format
+        try:
+            return datetime.strptime(date_string, "%d %b %Y").strftime("%Y-%m-%d")
+        except:
+            pass
+        
+        # Return as-is if no format matches
         return date_string.strip()
+    except:
+        return date_string
 
 def scrape_cse_dividends(start_date=None, end_date=None):
     """
-    Scrape CSE dividend announcements
+    Scrape CSE dividend announcements from API
     Args:
         start_date: Format DD/MM/YYYY (defaults to 1st of current month)
         end_date: Format DD/MM/YYYY (defaults to today)
     """
-    # Use dynamic dates if not provided
-    if not start_date or not end_date:
-        today = datetime.now()
-        first_day = today.replace(day=1)
-        start_date = first_day.strftime("%d/%m/%Y")
-        end_date = today.strftime("%d/%m/%Y")
-    url = "https://www.cse.lk/general-announcements"
+    # Not used by the API anymore, but keeping for compatibility
     
-    # Build the request with parameters
-    params = {
-        "id": "36429",
-        "type": "CASH+DIVIDEND",
-        "category": "CASH+DIVIDEND"
+    api_url = "https://www.cse.lk/api/smd"
+    
+    # Build the request body for POST - correct format from network inspection
+    payload = {
+        "allCategories": False,
+        "allCompanies": True,  # Get all companies
+        "categories": ["CASH DIVIDEND"]
     }
     
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Origin': 'https://www.cse.lk',
+        'Referer': 'https://www.cse.lk/announcements'
     }
     
     try:
-        print(f"Scraping from {start_date} to {end_date}...")
-        response = requests.get(url, params=params, headers=headers, timeout=10)
+        print(f"Scraping dividend announcements from CSE...")
+        response = requests.post(api_url, json=payload, headers=headers, timeout=10)
         response.raise_for_status()
         
-        soup = BeautifulSoup(response.content, 'html.parser')
-        
-        # Find all announcement items
+        data = response.json()
         announcements = []
-        announcement_items = soup.find_all('div', class_='announcement-item')
         
-        if not announcement_items:
-            # Try alternative selector
-            announcement_items = soup.find_all('div', {'data-announcement-id': True})
-        
-        for item in announcement_items:
-            try:
-                # Extract company name
-                company_name_elem = item.find(['h3', 'h4', 'span'], class_=lambda x: x and 'title' in x.lower() if x else False)
-                if not company_name_elem:
-                    company_name_elem = item.find_all('div')[0] if item.find_all('div') else None
-                
-                company_name = company_name_elem.get_text(strip=True) if company_name_elem else "Unknown"
-                
-                # Extract dates and dividend info - look for text patterns
-                text_content = item.get_text()
-                
-                xd_date = extract_field_value(text_content, "XD date") or extract_field_value(text_content, "Record Date")
-                voting_dividend = extract_field_value(text_content, "Voting dividend") or extract_field_value(text_content, "voting dividend per share")
-                payment_date = extract_field_value(text_content, "Payment Date") or extract_field_value(text_content, "payment date")
-                announcement_date = extract_field_value(text_content, "Announcement Date") or extract_field_value(text_content, "Date of initial")
-                
-                if xd_date or voting_dividend or payment_date:
-                    announcement = {
-                        "company_name": company_name,
-                        "xd_date": parse_date(xd_date),
-                        "voting_dividend_per_share": voting_dividend,
-                        "payment_date": parse_date(payment_date),
-                        "announcement_date": parse_date(announcement_date),
-                        "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    }
-                    announcements.append(announcement)
-            except Exception as e:
-                print(f"Error parsing item: {e}")
-                continue
+        # Parse API response
+        # Structure: {"Announcement": {"CASH DIVIDEND": [items]}}
+        if isinstance(data, dict) and 'Announcement' in data:
+            announcement_data = data['Announcement']
+            
+            # Iterate through categories (typically "CASH DIVIDEND")
+            for category_name, category_items in announcement_data.items():
+                if isinstance(category_items, list):
+                    for item in category_items:
+                        try:
+                            # Parse dates from DD-MM-YYYY format to YYYY-MM-DD
+                            xd_date = item.get('xd')
+                            payment_date = item.get('payment')
+                            record_date = item.get('recordDate')
+                            announcement_date = item.get('dateOfAnnouncement')
+                            
+                            announcement = {
+                                "company_name": item.get('company', 'Unknown'),
+                                "company_symbol": item.get('symbol'),
+                                "xd_date": parse_date(xd_date),
+                                "voting_dividend_per_share": item.get('votingDivPerShare'),
+                                "non_voting_dividend_per_share": item.get('nonVotingDivPerShare'),
+                                "payment_date": parse_date(payment_date),
+                                "record_date": parse_date(record_date),
+                                "announcement_date": parse_date(announcement_date),
+                                "final_interim": item.get('agm'),
+                                "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                            }
+                            # Only add if we have at least some dividend or date info
+                            if announcement['xd_date'] or announcement['payment_date']:
+                                announcements.append(announcement)
+                        except Exception as e:
+                            print(f"Error parsing item: {e}")
+                            continue
         
         if announcements:
             save_dividends(announcements)
-            print(f"Scraped {len(announcements)} announcements")
+            print(f"✓ Scraped {len(announcements)} dividend announcements")
             return announcements
         else:
             print("No announcements found")
             return []
     
     except Exception as e:
-        print(f"Error scraping CSE: {e}")
+        print(f"Error scraping CSE API: {e}")
         return []
 
 def extract_field_value(text, field_name):
