@@ -44998,5 +44998,77 @@
     "announcement_date": "2026-03-16",
     "final_interim": "19-06-2026",
     "scraped_at": "2026-05-08 05:15:06"
+  },
+  {
+    "company_name": "OVERSEAS REALTY (CEYLON) PLC",
+    "company_symbol": "OSEA",
+    "xd_date": "2026-04-30",
+    "voting_dividend_per_share": 1.75,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-05-14",
+    "record_date": "2026-05-04",
+    "announcement_date": "2026-03-04",
+    "final_interim": "29-04-2026",
+    "scraped_at": "2026-05-08 06:16:57"
+  },
+  {
+    "company_name": "ABANS FINANCE PLC",
+    "company_symbol": "AFSL",
+    "xd_date": "2026-05-04",
+    "voting_dividend_per_share": 2.72,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-05-21",
+    "record_date": "2026-05-05",
+    "announcement_date": "2026-04-22",
+    "final_interim": null,
+    "scraped_at": "2026-05-08 06:16:57"
+  },
+  {
+    "company_name": "CEYLINCO HOLDINGS PLC",
+    "company_symbol": "CINS",
+    "xd_date": "2026-05-20",
+    "voting_dividend_per_share": 51,
+    "non_voting_dividend_per_share": 51,
+    "payment_date": "2026-05-26",
+    "record_date": "2026-05-21",
+    "announcement_date": "2026-03-24",
+    "final_interim": "19-05-2026",
+    "scraped_at": "2026-05-08 06:16:57"
+  },
+  {
+    "company_name": "EQUITY TWO PLC",
+    "company_symbol": "ETWO",
+    "xd_date": "2026-05-14",
+    "voting_dividend_per_share": 4.41,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-06-03",
+    "record_date": "2026-05-15",
+    "announcement_date": "2026-05-05",
+    "final_interim": null,
+    "scraped_at": "2026-05-08 06:16:57"
+  },
+  {
+    "company_name": "CEYLON TOBACCO COMPANY PLC",
+    "company_symbol": "CTC",
+    "xd_date": "2026-05-27",
+    "voting_dividend_per_share": 17.54,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-06-16",
+    "record_date": "2026-05-29",
+    "announcement_date": "2026-04-20",
+    "final_interim": "26-05-2026",
+    "scraped_at": "2026-05-08 06:16:57"
+  },
+  {
+    "company_name": "SRI LANKA TELECOM PLC",
+    "company_symbol": "SLTL",
+    "xd_date": "2026-06-22",
+    "voting_dividend_per_share": 0.75,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-07-10",
+    "record_date": "2026-06-23",
+    "announcement_date": "2026-03-16",
+    "final_interim": "19-06-2026",
+    "scraped_at": "2026-05-08 06:16:57"
   }
 ]
