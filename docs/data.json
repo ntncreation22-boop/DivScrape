@@ -314242,5 +314242,65 @@
     "announcement_date": "2026-10-27",
     "final_interim": null,
     "scraped_at": "2026-10-28 16:11:04"
+  },
+  {
+    "company_name": "HATTON PLANTATIONS PLC",
+    "company_symbol": "HPL",
+    "xd_date": "2026-10-14",
+    "voting_dividend_per_share": 1,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-11-02",
+    "record_date": "2026-10-15",
+    "announcement_date": "2026-10-05",
+    "final_interim": null,
+    "scraped_at": "2026-10-28 19:46:46"
+  },
+  {
+    "company_name": "LION BREWERY CEYLON PLC",
+    "company_symbol": "LION",
+    "xd_date": "2026-10-20",
+    "voting_dividend_per_share": 40.3,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-11-06",
+    "record_date": "2026-10-21",
+    "announcement_date": "2026-10-09",
+    "final_interim": null,
+    "scraped_at": "2026-10-28 19:46:46"
+  },
+  {
+    "company_name": "LANKA CREDIT AND BUSINESS FINANCE PLC",
+    "company_symbol": "LCBF",
+    "xd_date": "2026-10-26",
+    "voting_dividend_per_share": 0.2,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-11-12",
+    "record_date": "2026-10-27",
+    "announcement_date": "2026-10-15",
+    "final_interim": null,
+    "scraped_at": "2026-10-28 19:46:46"
+  },
+  {
+    "company_name": "UNION CHEMICALS LANKA PLC",
+    "company_symbol": "UCAR",
+    "xd_date": "2026-10-27",
+    "voting_dividend_per_share": 48,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-11-13",
+    "record_date": "2026-10-28",
+    "announcement_date": "2026-10-16",
+    "final_interim": null,
+    "scraped_at": "2026-10-28 19:46:46"
+  },
+  {
+    "company_name": "DIGITAL MOBILITY SOLUTIONS LANKA PLC",
+    "company_symbol": "PKME",
+    "xd_date": "2026-11-05",
+    "voting_dividend_per_share": 2.75,
+    "non_voting_dividend_per_share": 0,
+    "payment_date": "2026-11-25",
+    "record_date": "2026-11-06",
+    "announcement_date": "2026-10-27",
+    "final_interim": null,
+    "scraped_at": "2026-10-28 19:46:46"
   }
 ]
